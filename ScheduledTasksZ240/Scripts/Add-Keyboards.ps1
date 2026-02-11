@@ -1,5 +1,7 @@
-$Current = Get-WinUserLanguageList
+$ErrorActionPreference = "SilentlyContinue"
+$WarningPreference = "SilentlyContinue"
 
+$Current = Get-WinUserLanguageList
 $Add = @("en-US","fr-FR")
 
 foreach ($lang in $Add) {
