@@ -1,18 +1,19 @@
-$roots = @(
-  "HKLM:\SYSTEM\CurrentControlSet\Control\Print\Environments\Windows x64\Drivers\Version-3",
-  "HKLM:\SYSTEM\CurrentControlSet\Control\Print\Environments\Windows x64\Drivers\Version-4"
-)
-
-$found = $false
-
-foreach ($root in $roots) {
-  if (Test-Path $root) {
-    foreach ($k in Get-ChildItem $root -ErrorAction SilentlyContinue) {
-      $n = $k.PSChildName
-      if ($n -like "*Ricoh*" -or $n -like "*PCL6*") { $found = $true; break }
-    }
-  }
-  if ($found) { break }
+# Force 64-bit PowerShell if Intune runs 32-bit
+if ($env:PROCESSOR_ARCHITEW6432 -and $PSHOME -like "*SysWOW64*") {
+  & "$env:WINDIR\sysnative\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File $PSCommandPath
+  exit $LASTEXITCODE
 }
 
-if ($found) { exit 0 } else { exit 1 }
+$targetNames = @(
+  "RICOH PCL6 UniversalDriver V4.42",
+  "PCL6 Driver for Universal Print"
+)
+
+try {
+  $drivers = Get-PrinterDriver -ErrorAction Stop
+  foreach ($t in $targetNames) {
+    if ($drivers.Name -contains $t) { exit 0 }
+  }
+} catch {}
+
+exit 1

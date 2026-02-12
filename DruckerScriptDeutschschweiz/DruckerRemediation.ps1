@@ -61,7 +61,7 @@ if (-not $Driver) {
 }
 
 if (-not $Driver) {
-    Write-Output "Kein geeigneter Ricoh/PCL6 Treiber gefunden – Abbruch."
+    Write-Output "Kein geeigneter Ricoh/PCL6 Treiber gefunden - Abbruch."
     exit 1
 }
 
